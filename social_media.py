@@ -7,7 +7,7 @@ class adjacencylist:
              "email":email,
              "posts":[]
         }
-        self.friends ={}
+        self.friends = {}
         self.blockedusers = []
 
 userID = []
@@ -35,19 +35,21 @@ class ConnectWorld:
 
     def unfollowUser(self,followerId, follweeId):
         followerNode = self.list_of_users[follweeId]
-        for i in followerNode.friends:
-            if followerId == i.vertex['email']:
-                followerNode.friends.pop(i)
+        print(followerNode.friends)
+        print(followerNode.friends[followerId])
+        followerNode.friends.pop(followerId)
 
     def postFeed(self,userid,feed):
         post = {
             "feed_id": next(uuid),
             "feed": feed,
-            "like": 0,
+            "like": 1,
             'dislike': 0,
             'hide': False
         }
         self.list_of_users[userid].vertex['posts'].append(post)
+        print('posted ... Your feed id ' ,post["feed_id"])
+
     def blockUser(self,currentuserId,userId):
         self.list_of_users[currentuserId].blockedusers.append(self.list_of_users[userId])
 
@@ -61,6 +63,7 @@ class ConnectWorld:
             for i in self.list_of_users[userid].vertex["posts"]:
                 if i["feed_id"] == feedId:
                     return(i["like"])
+            return("No such feedId")
 
     def getMyFeeds(self,currentUserId):
          if len(self.list_of_users[currentUserId].vertex["posts"])==0:
@@ -80,7 +83,7 @@ emailId = input("Enter emailID ")
 user.registerUSer(name,emailId)
 print("Account registered successfully")
 print("Enter your choice (Choose the index number)")
-print(" 1.Follow user \n 2.post feed \n 3.postFeeds \n 4.Block user \n 5.unFollow user \n 6.Get user Feeds \n 7.Get my feeds \n 8.Delete user")
+print(" 1.Follow user \n 2.postfeeds \n 3.getFeedLikesCount \n 4.Block user \n 5.unFollow user \n 6.Get user Feeds \n 7.Get my feeds \n 8.Delete user")
 output = int(input('Choose '))
 def checkdata():
     input_data = repeated_process()
@@ -96,13 +99,13 @@ def chooseUseroption(option):
         user.postFeed(emailId, input('upload your Feed '))
         checkdata()
     elif option == 3:
-        user.postFeed(emailId, input('upload your Feed '))
+        print(user.getFeedLikesCount(emailId, int(input('Enter FeedID '))))
         checkdata()
     elif option == 4:
         user.blockUser(input('userid needed to block '),emailId)
         checkdata()
     elif option == 5:
-        user.unfollowUser( input('enter id needed to unfollow '),emailId)
+        user.unfollowUser(input('enter id needed to unfollow '),emailId)
         checkdata()
     elif option == 6:
         user.getUserFeeds(input('Id to fetch feeds ? '))
@@ -115,3 +118,4 @@ def chooseUseroption(option):
         checkdata()
 
 chooseUseroption(output)
+
